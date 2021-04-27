@@ -53,13 +53,12 @@ class Repository
         }
     }
 
-    function addNewAccess($locationId, $timestamp, $site)
+    function addNewAccess($locationId,$site)
     {
         try {
-            $sql = "INSERT INTO access(location_id, timestamp, site) VALUES (:locationId, :timestamp, :site);";
+            $sql = "INSERT INTO access(location_id, site) VALUES (:locationId, :site);";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam("locationId",$locationId,PDO::PARAM_STR);
-            $stmt->bindParam("timestamp",$timestamp,PDO::PARAM_STR);
+            $stmt->bindParam("locationId",$locationId,PDO::PARAM_INT);
             $stmt->bindParam("site",$site,PDO::PARAM_STR);
             $result = $stmt->execute();
             if($result)
@@ -69,6 +68,26 @@ class Repository
         {
             return -1;
         }
+    }
+
+
+    function addVisit($site)
+    {
+
+        try
+        {
+            $sql = "INSERT INTO visit(site) VALUES (:site);";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam("site",$site,PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if($result)
+                return $this->conn->lastInsertId();
+        }
+        catch (PDOException $e)
+        {
+            return -1;
+        }
+
     }
 
     function getHostByIpAddress($ipAddress)
@@ -105,5 +124,22 @@ class Repository
         $stmt->execute();
         return $stmt->fetch();
     }
+
+
+    function getTodayAccessByHostId($hostId)
+    {
+        $sql = "SELECT a.id as id, location_id as locationId, timestamp as timestamp, site as site
+                        FROM access a INNER JOIN location l on a.location_id = l.id INNER JOIN host h on l.host_id = h.id
+                        WHERE l.host_id = :hostId AND DATE(a.timestamp) = DATE(NOW());";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam("hostId",$hostId,PDO::PARAM_INT);
+        $stmt->setFetchMode(PDO::FETCH_CLASS,"Access");
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+
+
 
 }

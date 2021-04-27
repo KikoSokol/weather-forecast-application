@@ -1,6 +1,7 @@
 <?php
 
 require_once "service/Service.php";
+require_once "repository/Repository.php";
 header('Content-Type: application/json');
 
 //$url = "http://api.ipstack.com/";
@@ -18,8 +19,9 @@ header('Content-Type: application/json');
 
 
 $service = new Service();
+$repository = new Repository();
 //
-echo json_encode($service->createIpSession($_SERVER['REMOTE_ADDR']));
+//echo json_encode($service->createIpSession($_SERVER['REMOTE_ADDR']));
 
 
 //$url = "http://api.openweathermap.org/data/2.5/weather?";
@@ -44,3 +46,9 @@ echo json_encode($service->createIpSession($_SERVER['REMOTE_ADDR']));
 
 
 //echo json_encode($service->getWeatherId("49.00170135498","21.239999771118"));
+
+
+//echo json_encode($repository->getTodayAccessByHostId(1));
+
+//echo json_encode($repository->addNewAccess(1,"A"));
+echo json_encode($repository->getTodayAccessByHostId(1));

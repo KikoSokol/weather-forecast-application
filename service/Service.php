@@ -137,4 +137,19 @@ class Service
     }
 
 
+    function addAccess($sessionInfo,$site)
+    {
+        $this->repository->addVisit($site);
+        $access = $this->repository->getTodayAccessByHostId($sessionInfo["host"]->id);
+
+        if($access != false)
+            return false;
+
+        $newAccessId = $this->repository->addNewAccess($sessionInfo["location"]->id,$site);
+
+        return $newAccessId;
+
+    }
+
+
 }

@@ -33,7 +33,7 @@ function showWeather(allow)
             Accept: "application/json",
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({allowed:allow}),
+        body: JSON.stringify({allowed:allow,site:'A'}),
     });
 
     fetch(request)

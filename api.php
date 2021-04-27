@@ -33,32 +33,36 @@ switch ($operation)
         $json = file_get_contents('php://input');
         $data = json_decode($json);
 
-        if($data->allowed)
-        {
-            $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
-        }
-        echo json_encode(getWeather($service));
+//        if($data->allowed)
+//        {
+//            $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
+//        }
+        registerSession($data->allowed);
+        echo json_encode(getWeather($service,$data->site));
         break;
     case "getIpInfo":
         $json = file_get_contents('php://input');
         $data = json_decode($json);
 
-        if($data->allowed)
-        {
-            $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
-        }
-        echo json_encode(getIpInfo($service));
+//        if($data->allowed)
+//        {
+//            $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
+//        }
+        registerSession($data->allowed);
+        echo json_encode(getIpInfo($service,$data->site));
         break;
-//    default:
+    default:
 //        $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
 //        echo json_encode(getWeather($service));
-
+//        registerSession(true);
+//        echo json_encode(getWeather($service,"A"));
+//        break;
 }
 
 
 
 
-function getWeather(Service $service)
+function getWeather(Service $service,$site)
 {
     $result = array();
 
@@ -80,6 +84,7 @@ function getWeather(Service $service)
             $result["correct"] = true;
             $result["message"] = "Operácia úspešná";
             $result["weather"] = $service->getWeatherId($lat,$lon);
+            $service->addAccess($ipInfomration,$site);
         }
     }
     else
@@ -98,7 +103,7 @@ function getWeather(Service $service)
 
 
 
-function getIpInfo(Service $service)
+function getIpInfo(Service $service,$site)
 {
     $result = array();
 
@@ -118,6 +123,7 @@ function getIpInfo(Service $service)
             $result["correct"] = true;
             $result["message"] = "Operácia úspešná";
             $result["ipInfo"] = $ipInfomration;
+            $service->addAccess($ipInfomration,$site);
         }
 
     }
@@ -134,7 +140,13 @@ function getIpInfo(Service $service)
 
 
 
-
+function registerSession($allow)
+{
+    if($allow == true)
+    {
+        $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
+    }
+}
 
 
 
