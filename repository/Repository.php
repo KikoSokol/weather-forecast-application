@@ -140,6 +140,99 @@ class Repository
     }
 
 
+    function getCountryStats()
+    {
+        $sql = "SELECT l.state as state, l.code, COUNT(l.state) as count FROM access a
+                    INNER JOIN location l on a.location_id = l.id GROUP BY l.state, l.code;";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    function getSiteVisit()
+    {
+        $sql = "SELECT CASE WHEN visit.site = 'A' then 'Predpoveď počasia'
+                    WHEN visit.site = 'B' then 'Informácie o IP adrese'
+                    WHEN visit.site = 'C' then 'Štatistika' END as site, COUNT(*) as count
+                        FROM visit group by visit.site;";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function getBestSite()
+    {
+        $sql = "SELECT CASE WHEN visit.site = 'A' then 'Predpoveď počasia'
+                    WHEN visit.site = 'B' then 'Informácie o IP adrese'
+                    WHEN visit.site = 'C' then 'Štatistika' END as site, COUNT(*) as count
+                    FROM visit group by visit.site ORDER BY count DESC LIMIT 1;";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+    }
+
+    function getAllPlacesCords()
+    {
+        $sql = "SELECT distinct latitude as lat, longitude as lon FROM location;";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    function getA()
+    {
+        $sql = "SELECT COUNT(access.timestamp) as count FROM access where TIME(access.timestamp) BETWEEN TIME('00:00:00') AND TIME('05:59:59');";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["count"];
+    }
+
+    function getB()
+    {
+        $sql = "SELECT COUNT(access.timestamp) as count FROM access where TIME(access.timestamp) BETWEEN TIME('06:00:00') AND TIME('14:59:59');";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["count"];
+    }
+
+    function getC()
+    {
+        $sql = "SELECT COUNT(access.timestamp) as count FROM access where TIME(access.timestamp) BETWEEN TIME('15:00:00') AND TIME('20:59:59');";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["count"];
+    }
+
+    function getD()
+    {
+        $sql = "SELECT COUNT(access.timestamp) as count FROM access where TIME(access.timestamp) BETWEEN TIME('21:00:00') AND TIME('23:59:59');";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["count"];
+    }
+
+
+    function getVisitInState($state)
+    {
+        $sql = "SELECT l.city as city, COUNT(l.city) as count FROM access a INNER JOIN location l on a.location_id = l.id WHERE l.state = :state GROUP BY l.city;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam("state",$state,PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
 
 
 }

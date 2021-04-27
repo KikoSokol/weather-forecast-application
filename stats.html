@@ -1,10 +1,264 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/indexCss.css">
+
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+
+
+    <title>Štatisika</title>
+    <script src="js/stats.js"></script>
+
+
 </head>
-<body>
+<body onload="checkAllowedAccess()">
+
+<header class="navbar justify-content-center hea">
+    <h1 class="nazov">Štatisika</h1>
+</header>
+
+
+
+
+<main class="container">
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 textFunDiv">
+            <div>
+                <p class="textFun">Počet návštevníkov v krajinách</p>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="row" id="countryStats">
+        <div class="col-md-12 m">
+
+            <table class="table table-sm table-bordered table-responsive-sm tb" id="tableCountryStats">
+                <thead class="thead-dark">
+                <tr id="headAction">
+                    <th scope="col" class="centerText">Vlajka</th>
+                    <th scope="col" class="centerText">Krajina</th>
+                    <th scope="col" class="centerText">Počet návštevníkov</th>
+                </tr>
+                </thead>
+                <tbody id="bodyTableCountryStats">
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 textFunDiv">
+            <div>
+                <p class="textFun">Počet návštev počas dňa</p>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="row" id="visitPerDay">
+        <div class="col-md-12 m">
+
+            <table class="table table-sm table-bordered table-responsive-sm tb" id="tableVisitPerDay">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="centerText">Časť dňa</th>
+                    <th scope="col" class="centerText">Počet návštev</th>
+                </tr>
+                </thead>
+                <tbody id="bodyTableVisitPerDay">
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 textFunDiv">
+            <div>
+                <p class="textFun">Návštevnosť stránok</p>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="row" id="visitSites">
+        <div class="col-md-12 m">
+
+            <table class="table table-sm table-bordered table-responsive-sm tb" id="tableVisitSites">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="centerText">Stránka</th>
+                    <th scope="col" class="centerText">Počet návštev</th>
+                </tr>
+                </thead>
+                <tbody id="bodyTableVisitSites">
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 textFunDiv">
+            <div>
+                <p class="textFun">Najnavštevovanejšia stránka</p>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="row" id="bestSite">
+        <div class="col-md-12 m">
+
+            <table class="table table-sm table-bordered table-responsive-sm tb" id="tableBestSite">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="centerText">Najnavštevovanejšia stránka</th>
+                    <th scope="col" class="centerText">Počet návštev</th>
+                </tr>
+                </thead>
+                <tbody id="bodyTableBestSite">
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 textFunDiv">
+            <div>
+                <p class="textFun">Mapa</p>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="row" id="maps">
+        <div class="col-md-12 m">
+
+<!--           mapa-->
+            <div id="map"></div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row" id="noContentArea">
+        <div class="col-md-12 sec">
+            <p id="noContentText"></p>
+        </div>
+    </div>
+
+
+</main>
+
+
+
+<div class="modal fade bd-example-modal-lg" id="graphModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Súhlas so spracovaním IP adresy a GPS suradníc</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="grafDiv">
+                    <p>Na to aby sme vám mohli ukázať predpoveď počasia je potrebné aby ste nám udelili súhlas so spracovaním ip adresy a GPS suradníc.</p>
+                    <p>Bez tohto súhlasu vám nebudeme môcť zobraziť obsah tejto stránky</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"  onclick="getContent(true)">Povoliť</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="cityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeCityModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="tableCityDiv">
+                    <table class="table table-sm table-bordered table-responsive-sm tb" id="tableCity">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" class="centerText">Názov mesta</th>
+                            <th scope="col" class="centerText">Počet návštev</th>
+                        </tr>
+                        </thead>
+                        <tbody id="bodyTableCity">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>
+
+<!--example-1 square scrollbar-cyan bordered-cyan-->

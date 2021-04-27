@@ -111,3 +111,13 @@ label{
     font-weight: bold;
 }
 
+.flag{
+    height: 50px;
+    width: auto;
+}
+
+#map {
+    height: 500px;
+    width: auto;
+}
+

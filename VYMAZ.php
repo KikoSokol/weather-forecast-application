@@ -51,4 +51,19 @@ $repository = new Repository();
 //echo json_encode($repository->getTodayAccessByHostId(1));
 
 //echo json_encode($repository->addNewAccess(1,"A"));
-echo json_encode($repository->getTodayAccessByHostId(1));
+//echo json_encode($repository->getTodayAccessByHostId(1));
+
+//echo json_encode($repository->getCountryStats());
+
+//echo json_encode($repository->getSiteVisit());
+
+//echo json_encode($repository->getBestSite());
+
+//echo json_encode($repository->getAllPlacesCords());
+
+//echo json_encode($repository->getC());
+
+//echo json_encode($repository->getVisitInState("Slovakia"));
+
+
+echo json_encode($service->getStats());

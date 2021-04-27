@@ -51,6 +51,17 @@ switch ($operation)
         registerSession($data->allowed);
         echo json_encode(getIpInfo($service,$data->site));
         break;
+    case "getStats":
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        registerSession($data->allowed);
+        echo json_encode(getStats($service,$data->site));
+        break;
+    case "getCityCounts":
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        echo json_encode($service->getCityVisites($data->state));
+        break;
     default:
 //        $_SESSION["ipAddress"] = $_SERVER['REMOTE_ADDR'];
 //        echo json_encode(getWeather($service));
@@ -117,7 +128,7 @@ function getIpInfo(Service $service,$site)
         {
             $result["correct"] = false;
             $result["message"] = "Nepodarilo sa zistiť potrebné informácie";
-            $result["weather"] = null;
+            $result["ipInfo"] = null;
         }
         else{
             $result["correct"] = true;
@@ -132,11 +143,49 @@ function getIpInfo(Service $service,$site)
         $result["allowed"] = false;
         $result["correct"] = false;
         $result["message"] = "Nebolo povelené pristupovať ku IP adrese a GPS suradniciam preto nie je možné sprístupniť obsah";
-        $result["weather"] = null;
+        $result["ipInfo"] = null;
     }
 
     return $result;
 }
+
+
+function getStats(Service $service,$site)
+{
+    $result = array();
+
+    if(isset($_SESSION["ipAddress"]) && $_SESSION["ipAddress"] === $_SERVER['REMOTE_ADDR'])
+    {
+        $result["allowed"] = true;
+
+        $ipInfomration = $service->createIpSession($_SESSION["ipAddress"]);
+
+        if($ipInfomration == false)
+        {
+            $result["correct"] = false;
+            $result["message"] = "Nepodarilo sa zistiť potrebné informácie";
+            $result["stats"] = null;
+        }
+        else{
+            $service->addAccess($ipInfomration,$site);
+            $result["correct"] = true;
+            $result["message"] = "Operácia úspešná";
+            $result["stats"] = $service->getStats();
+        }
+
+    }
+    else
+    {
+        $result["allowed"] = false;
+        $result["correct"] = false;
+        $result["message"] = "Nebolo povelené pristupovať ku IP adrese a GPS suradniciam preto nie je možné sprístupniť obsah";
+        $result["stats"] = null;
+    }
+
+    return $result;
+}
+
+
 
 
 

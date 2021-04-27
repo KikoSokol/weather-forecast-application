@@ -148,7 +148,45 @@ class Service
         $newAccessId = $this->repository->addNewAccess($sessionInfo["location"]->id,$site);
 
         return $newAccessId;
+    }
 
+    function getStats()
+    {
+        $result = array();
+
+        $result["countryStats"] = $this->repository->getCountryStats();
+
+        $result["cords"] = $this->repository->getAllPlacesCords();
+
+
+        $timesA["part"] = "00:00:00 - 05:59:59";
+        $timesA["count"] = $this->repository->getA();
+
+        $timesB["part"] = "06:00:00 - 14:59:59";
+        $timesB["count"] = $this->repository->getB();
+
+        $timesC["part"] = "15:00:00 - 20:59:59";
+        $timesC["count"] = $this->repository->getC();
+
+        $timesD["part"] = "21:00:00 - 23:59:59";
+        $timesD["count"] = $this->repository->getD();
+
+
+        $result["time"][0] = $timesA;
+        $result["time"][1] = $timesB;
+        $result["time"][2] = $timesC;
+        $result["time"][3] = $timesD;
+
+        $result["visits"] = $this->repository->getSiteVisit();
+
+        $result["bestSite"] = $this->repository->getBestSite();
+
+        return $result;
+    }
+
+    function getCityVisites($country)
+    {
+        return $this->repository->getVisitInState($country);
     }
 
 
